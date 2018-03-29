@@ -12,26 +12,31 @@ import GameplayKit
 
 class GameViewController: UIViewController {
 
+    // MARK: Properties
+    
+    var scene: GameScene!
+    
+    // MARK: View Controller Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let view = self.view as! SKView? {
-            // Load the SKScene from 'GameScene.sks'
-            if let scene = SKScene(fileNamed: "GameScene") {
-                // Set the scale mode to scale to fit the window
-                scene.scaleMode = .aspectFill
-                
-                // Present the scene
-                view.presentScene(scene)
-            }
-            
-            view.ignoresSiblingOrder = true
-            
-            view.showsFPS = true
-            view.showsNodeCount = true
-        }
+        // Configure the view.
+        let skView = self.view as! SKView
+        skView.ignoresSiblingOrder = true
+        skView.showsFPS = true
+        skView.showsNodeCount = true
+        
+        // Configure the scene.
+        scene = GameScene(size: skView.bounds.size)
+        scene.scaleMode = .resizeFill
+        
+        // Present the scene.
+        skView.presentScene(scene)
     }
 
+    // MARK: View Controller Configuration
+    
     override var shouldAutorotate: Bool {
         return true
     }
@@ -44,12 +49,14 @@ class GameViewController: UIViewController {
         }
     }
 
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
+    // MARK: Memory Management
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.
-    }
-
-    override var prefersStatusBarHidden: Bool {
-        return true
     }
 }
