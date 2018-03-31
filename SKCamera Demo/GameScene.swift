@@ -14,6 +14,7 @@ class GameScene: SKScene {
     // MARK: Properties
     
     let gameLayer: SKNode!
+    let demoCamera: DemoCamera!
     
     // MARK: Initializers
     
@@ -25,11 +26,13 @@ class GameScene: SKScene {
     // Init
     override init(size: CGSize) {
         
-        // Initialize the game layer node that will hold our game pieces
+        // Initialize the game layer node that will hold our game pieces and
+        // move the gameLayer node to the center of the scene
         gameLayer = SKNode()
-        
-        // Move the gameLayer node to the center of the scene
         gameLayer.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        
+        // Initailize the demo camera
+        demoCamera = DemoCamera()
         
         // Call the super class initializer
         super.init(size: size)
@@ -42,11 +45,19 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         
+        // Call any custom code to setup the scene
         addGamePieces()
+        
+        // Set the scene's camera
+        camera = demoCamera
     }
     
+    // Called before each frame is rendered
     override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
+        demoCamera.velocity.x *= demoCamera.friction
+        demoCamera.velocity.y *= demoCamera.friction
+        demoCamera.position.x -= demoCamera.velocity.x
+        demoCamera.position.y += demoCamera.velocity.y
     }
     
     // MARK: Private Functions

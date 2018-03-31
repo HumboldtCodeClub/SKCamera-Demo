@@ -13,6 +13,7 @@
 		B2441BC7206DACC10060E453 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2441BC5206DACC10060E453 /* Main.storyboard */; };
 		B2441BC9206DACC10060E453 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2441BC8206DACC10060E453 /* Assets.xcassets */; };
 		B2441BCC206DACC10060E453 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2441BCA206DACC10060E453 /* LaunchScreen.storyboard */; };
+		B2441BD4206F24380060E453 /* DemoCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2441BD3206F24380060E453 /* DemoCamera.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		B2441BC8206DACC10060E453 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B2441BCB206DACC10060E453 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B2441BCD206DACC10060E453 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B2441BD3206F24380060E453 /* DemoCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCamera.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 				B2441BBB206DACC10060E453 /* AppDelegate.swift */,
 				B2441BC1206DACC10060E453 /* GameScene.swift */,
 				B2441BC3206DACC10060E453 /* GameViewController.swift */,
+				B2441BD3206F24380060E453 /* DemoCamera.swift */,
 				B2441BC5206DACC10060E453 /* Main.storyboard */,
 				B2441BC8206DACC10060E453 /* Assets.xcassets */,
 				B2441BCA206DACC10060E453 /* LaunchScreen.storyboard */,
@@ -140,6 +143,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B2441BC2206DACC10060E453 /* GameScene.swift in Sources */,
+				B2441BD4206F24380060E453 /* DemoCamera.swift in Sources */,
 				B2441BC4206DACC10060E453 /* GameViewController.swift in Sources */,
 				B2441BBC206DACC10060E453 /* AppDelegate.swift in Sources */,
 			);

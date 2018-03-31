@@ -14,7 +14,9 @@ class GameViewController: UIViewController {
 
     // MARK: Properties
     
-    var scene: GameScene!
+    var demoScene: GameScene!
+    let panGesture = UIPanGestureRecognizer()
+    let pinchGesture = UIPinchGestureRecognizer()
     
     // MARK: View Controller Lifecycle
     
@@ -28,13 +30,46 @@ class GameViewController: UIViewController {
         skView.showsNodeCount = true
         
         // Configure the scene.
-        scene = GameScene(size: skView.bounds.size)
-        scene.scaleMode = .resizeFill
+        demoScene = GameScene(size: skView.bounds.size)
+        demoScene.scaleMode = .resizeFill
+        
+        // Configure the pan gesture recognizer
+        panGesture.addTarget(self, action: #selector(handlePanGesture(recognizer:)))
+        self.view.addGestureRecognizer(panGesture)
+        
+        // Configure the pinch gesture recognizer
+        pinchGesture.addTarget(self, action: #selector(handlePinchGesture(recognizer:)))
+        self.view.addGestureRecognizer(pinchGesture)
         
         // Present the scene.
-        skView.presentScene(scene)
+        skView.presentScene(demoScene)
     }
 
+    // MARK: Touch-based event handling
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        demoScene.demoCamera.velocity.x = 0.0
+        demoScene.demoCamera.velocity.y = 0.0
+    }
+    
+    @objc func handlePanGesture(recognizer: UIPanGestureRecognizer) {
+        print("Swipe detected")
+        let panVelocity = (recognizer.velocity(in: demoScene.view))
+        demoScene.demoCamera.velocity.x = (panVelocity.x / 100) * demoScene.demoCamera.xScale
+        demoScene.demoCamera.velocity.y = (panVelocity.y / 100) * demoScene.demoCamera.yScale
+    }
+    
+    @objc func handlePinchGesture(recognizer: UIPinchGestureRecognizer) {
+        // Find the difference in scale and multiply by current scale
+        let deltaScale = (recognizer.scale - 1) * demoScene.demoCamera.xScale
+        
+        // We subtract the change in scale from the previous scale
+        demoScene.demoCamera.setScale(demoScene.demoCamera.xScale - deltaScale)
+        
+        // Set the gesture recognizer scale back to 1 so that we don't scale exponentially
+        recognizer.scale = 1.0
+    }
+    
     // MARK: View Controller Configuration
     
     override var shouldAutorotate: Bool {
