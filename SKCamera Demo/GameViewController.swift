@@ -10,7 +10,7 @@ import UIKit
 import SpriteKit
 import GameplayKit
 
-class GameViewController: UIViewController {
+class GameViewController: UIViewController, UIGestureRecognizerDelegate {
 
     // MARK: Properties
     
@@ -35,6 +35,7 @@ class GameViewController: UIViewController {
         
         // Configure the pan gesture recognizer
         panGesture.addTarget(self, action: #selector(handlePanGesture(recognizer:)))
+        panGesture.delegate = self
         self.view.addGestureRecognizer(panGesture)
         
         // Configure the pinch gesture recognizer
@@ -50,10 +51,11 @@ class GameViewController: UIViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         demoScene.demoCamera.velocity.x = 0.0
         demoScene.demoCamera.velocity.y = 0.0
+        demoScene.demoCamera.velocity.z = 0.0
+        demoScene.demoCamera.attraction.z = 0.0
     }
     
     @objc func handlePanGesture(recognizer: UIPanGestureRecognizer) {
-        print("Swipe detected")
         let panVelocity = (recognizer.velocity(in: demoScene.view))
         demoScene.demoCamera.velocity.x = (panVelocity.x / 100) * demoScene.demoCamera.xScale
         demoScene.demoCamera.velocity.y = (panVelocity.y / 100) * demoScene.demoCamera.yScale
@@ -61,13 +63,24 @@ class GameViewController: UIViewController {
     
     @objc func handlePinchGesture(recognizer: UIPinchGestureRecognizer) {
         // Find the difference in scale and multiply by current scale
-        let deltaScale = (recognizer.scale - 1) * demoScene.demoCamera.xScale
+        //let deltaScale = (recognizer.scale - 1) * demoScene.demoCamera.xScale
         
         // We subtract the change in scale from the previous scale
-        demoScene.demoCamera.setScale(demoScene.demoCamera.xScale - deltaScale)
+        //demoScene.demoCamera.setScale(demoScene.demoCamera.xScale - deltaScale)
         
         // Set the gesture recognizer scale back to 1 so that we don't scale exponentially
-        recognizer.scale = 1.0
+        //recognizer.scale = 1.0
+
+        let pinchVelocity = recognizer.velocity
+        demoScene.demoCamera.velocity.z = (pinchVelocity / 100) * demoScene.demoCamera.xScale
+
+    }
+    
+    // MARK: Gesture Recognizer Delegate
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+                           shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true;
     }
     
     // MARK: View Controller Configuration

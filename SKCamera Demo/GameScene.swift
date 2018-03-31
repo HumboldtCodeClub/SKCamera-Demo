@@ -56,8 +56,22 @@ class GameScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         demoCamera.velocity.x *= demoCamera.friction
         demoCamera.velocity.y *= demoCamera.friction
+        demoCamera.velocity.z *= demoCamera.friction
+        
+        demoCamera.attraction.z *= demoCamera.attractiveForce
+        
         demoCamera.position.x -= demoCamera.velocity.x
         demoCamera.position.y += demoCamera.velocity.y
+        demoCamera.setScale(demoCamera.xScale - demoCamera.velocity.z)
+        
+        if (demoCamera.xScale < 1.0) {
+            demoCamera.attraction.z = 1.0 - demoCamera.xScale
+        } else if (demoCamera.xScale > 4.0) {
+            demoCamera.attraction.z = 4.0 - demoCamera.xScale
+        } else {
+            demoCamera.attraction.z = 0.0
+        }
+        
     }
     
     // MARK: Private Functions

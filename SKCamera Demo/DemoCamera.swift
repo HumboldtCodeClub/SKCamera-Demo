@@ -8,17 +8,14 @@
 
 import SpriteKit
 
-struct Velocity {
-    var x: CGFloat = 0.0
-    var y: CGFloat = 0.0
-}
-
 class DemoCamera: SKCameraNode {
     
     // MARK: Properties
     
-    var friction: CGFloat = 0.93
-    var velocity = Velocity()
+    let friction: CGFloat = 0.93
+    let attractiveForce: CGFloat = 0.01
+    var velocity: (x: CGFloat, y: CGFloat, z: CGFloat) = (0, 0, 0)
+    var attraction: (x: CGFloat, y: CGFloat, z: CGFloat) = (0, 0, 0)
     
     // MARK: Initializers
     
@@ -29,5 +26,7 @@ class DemoCamera: SKCameraNode {
     override init() {
         super.init()
     }
+    
+    // MARK: Update Functions
 }
 
