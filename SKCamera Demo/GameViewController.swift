@@ -49,31 +49,17 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     // MARK: Touch-based event handling
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        demoScene.demoCamera.velocity.x = 0.0
-        demoScene.demoCamera.velocity.y = 0.0
-        demoScene.demoCamera.velocity.z = 0.0
-        demoScene.demoCamera.attraction.z = 0.0
+        demoScene.demoCamera.stop()
     }
     
     @objc func handlePanGesture(recognizer: UIPanGestureRecognizer) {
         let panVelocity = (recognizer.velocity(in: demoScene.view))
-        demoScene.demoCamera.velocity.x = (panVelocity.x / 100) * demoScene.demoCamera.xScale
-        demoScene.demoCamera.velocity.y = (panVelocity.y / 100) * demoScene.demoCamera.yScale
+        demoScene.demoCamera.setCameraPositionVelocity(x: panVelocity.x / 100, y: panVelocity.y / 100)
     }
     
     @objc func handlePinchGesture(recognizer: UIPinchGestureRecognizer) {
-        // Find the difference in scale and multiply by current scale
-        //let deltaScale = (recognizer.scale - 1) * demoScene.demoCamera.xScale
-        
-        // We subtract the change in scale from the previous scale
-        //demoScene.demoCamera.setScale(demoScene.demoCamera.xScale - deltaScale)
-        
-        // Set the gesture recognizer scale back to 1 so that we don't scale exponentially
-        //recognizer.scale = 1.0
-
         let pinchVelocity = recognizer.velocity
-        demoScene.demoCamera.velocity.z = (pinchVelocity / 100) * demoScene.demoCamera.xScale
-
+        demoScene.demoCamera.setCameraScaleVelocity(z: pinchVelocity / 100)
     }
     
     // MARK: Gesture Recognizer Delegate
