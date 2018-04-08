@@ -36,12 +36,13 @@ class GameScene: SKScene {
         // Initialize the game layer node that will hold our game pieces and
         // move the gameLayer node to the center of the scene
         gameLayer = SKNode()
-        gameLayer.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        gameLayer.position = CGPoint(x: 0, y: 0)
         
         // Initailize the demo camera
         demoCamera = DemoCamera()
         demoCamera.showScale()
         demoCamera.showPosition()
+        demoCamera.showViewport()
         
         // Call the super class initializer
         super.init(size: size)
@@ -78,17 +79,23 @@ class GameScene: SKScene {
     
     // This function just sets up a bunch of shape nodes so we can demonstrate the camera panning and zooming.
     private func addGamePieces() {
-        let columns = 16
-        let rows = 16
-        for column in 0...columns {
-            for row in 0...rows {
+        // Keeping column and row numbers even will keep the game centered about the origin because we're working with integers
+        let columns = 18
+        let rows = 18
+        for column in 0...columns - 1 {
+            for row in 0...rows - 1 {
                 let newGamePiece = SKShapeNode(circleOfRadius: 50.0)
-                newGamePiece.position = CGPoint(x: (column * 120) - (columns * 60), y: (row * 120) - (rows * 60))
+                newGamePiece.position = CGPoint(x: (column * 120) - (columns * 60) + 60, y: (row * 120) - (rows * 60) + 60)
                 newGamePiece.strokeColor = UIColor.blue
                 newGamePiece.fillColor = UIColor.blue
                 gameLayer.addChild(newGamePiece)
             }
         }
+        let centerGamePiece = SKShapeNode(circleOfRadius: 5.0)
+        centerGamePiece.strokeColor = .red
+        centerGamePiece.fillColor = .red
+        centerGamePiece.position = CGPoint(x: 0, y: 0)
+        gameLayer.addChild(centerGamePiece)
     
     }
 }

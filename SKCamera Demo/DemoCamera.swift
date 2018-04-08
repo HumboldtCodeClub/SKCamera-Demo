@@ -20,7 +20,7 @@ class DemoCamera: SKCameraNode {
     
     // friction is a used to decrease the velocity of the camera after user interaction has
     // ended to cause the camera to gradually slow to a stop.
-    private var friction: CGFloat = 0.93
+    private var friction: CGFloat = 0.95
     
     // attraction is a value derived from the distance the camera's position is outside of the
     // camera's range.  It is used along with the attractive force to provide a 'soft' edge to
@@ -44,11 +44,17 @@ class DemoCamera: SKCameraNode {
     // A boolean value that indicates whether the camera displays a scale indicator.
     private var showsScale = false
     
+    // A boolean value that indicates whether the camera displays a viewport indicator.
+    private var showsViewport = false
+    
     // Position indicator that demonstrates adding game controls to the camera and aids in debugging
     private let positionLabel = SKLabelNode(fontNamed: "AppleSDGothicNeo-SemiBold")
     
     // Scale indicator that demonstrates adding game controls to the camera and aids in debugging
     private let scaleLabel = SKLabelNode(fontNamed: "AppleSDGothicNeo-SemiBold")
+    
+    // Viewport indicator that demonstrates adding game controls to the camera and aids in debugging
+    private let viewportLabel = SKLabelNode(fontNamed: "AppleSDGothicNeo-SemiBold")
     
     
     // MARK: Initializers
@@ -100,6 +106,16 @@ class DemoCamera: SKCameraNode {
         }
     }
     
+    func showViewport() {
+        if (!showsViewport) {
+            showsViewport = true
+            viewportLabel.fontSize = 8
+            viewportLabel.fontColor = .white
+            viewportLabel.position = CGPoint(x:0.0, y: -30.0)
+            addChild(viewportLabel)
+        }
+    }
+    
     // Set the velocity of the camera position and scale
     func setCameraVelocity(x: CGFloat!, y: CGFloat!, z: CGFloat!) {
         setCameraPositionVelocity(x: x, y: y)
@@ -137,7 +153,7 @@ class DemoCamera: SKCameraNode {
     // Set the camera's attractive force
     func setCameraAttractiveForce(force: CGFloat) {
         if (force <= 0 || force >= 1.0) {
-            os_log("Friction should be a number between 0 and 1", type: .error)
+            os_log("Attractive force should be a number between 0 and 1", type: .error)
         }
     }
     
@@ -222,14 +238,22 @@ class DemoCamera: SKCameraNode {
      */
     private func updateHUD() {
         if (showsPosition) {
+            
             let x = position.x.rounded(FloatingPointRoundingRule.toNearestOrEven)
             let y = position.y.rounded(FloatingPointRoundingRule.toNearestOrEven)
             positionLabel.text = "position: (\(x), \(y))"
+            positionLabel.position = CGPoint(x:parent!.frame.size.width / 2 - 50, y: -parent!.frame.size.height/2 + 30)
         }
         
         if (showsScale) {
             let scale = round(100 * xScale) / 100.0
             scaleLabel.text = "Scale: \(scale)"
+            scaleLabel.position = CGPoint(x:parent!.frame.size.width / 2 - 50, y: -parent!.frame.size.height/2 + 40)
+        }
+        
+        if (showsViewport) {
+            viewportLabel.text = "Viewport: (\(parent!.frame.size.width), \(parent!.frame.size.height))"
+            viewportLabel.position = CGPoint(x:parent!.frame.size.width / 2 - 50, y: -parent!.frame.size.height/2 + 20)
         }
     }
 }
