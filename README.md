@@ -33,14 +33,19 @@ Our solution was to create a soft edge effect where the camera could travel past
 
 ## Implementation
 
-* Subclass SKCameraNode  
-    1. Add DemoCamera.swift to your project of create a similar subclass.   
-* Add an instance of DemoCamera to a scene
-    1. Configure the camera
-    2. Set the scene's camera to the demo camera instance
-    3. Add the camera node as a child of the scene (so HUD can be displayed)
-    4. Call the camera's update function from the scene's update function
-* Use gesture recognizers to update the camera's velocity based on user touch input
+1. Add DemoCamera subclass of SKCameraNode to your project
+    * Add DemoCamera.swift to your project or create a similar subclass.  
+2. GameScene.swift  
+Configure your camera in the init function of your scene.
+    * Configure the camera attributes.
+    * Set the scene's camera to the demo camera instance
+    * Add the camera node as a child of the scene (so HUD can be displayed)
+    * Call the camera's update function from the scene's update function
+3. GameViewController.swift  
+Use gesture recognizers and touches to update the camera's velocity based on user touch input.
+    * Create a UIPanGestureRecognizer and selector function.  Update the camera's x and y velocities based on the gesture recognizer velocity.
+    * Create a UIPinchGestureRecognizer and selector function.  Update the camera's z velocity based on the gesture recognizer velocity.
+    * Implement the touchesBegan function and call the camera's stop function to give the effect of catching a moving camera under your finger.
 
 ## Dependencies
 
