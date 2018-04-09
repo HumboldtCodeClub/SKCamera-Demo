@@ -52,4 +52,8 @@ Use gesture recognizers and touches to update the camera's velocity based on use
 * Swift 4
 * Xcode
 
-
+## Tested on
+iOS 11.0  
+iOS 11.3  
+iPhone SE  
+iPad Pro 12.9  
