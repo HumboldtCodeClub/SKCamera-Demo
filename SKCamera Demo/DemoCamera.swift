@@ -1,14 +1,15 @@
 //
-//  DemoCamera.swift
-//  SKCamera Demo
+///  DemoCamera.swift
+///  SKCamera Demo
 //
-//  Created by Sean Allen on 3/30/18.
-//  Copyright © 2018 Humboldt Code Club. All rights reserved.
+///  Created by Sean Allen on 3/30/18.
+///  Copyright © 2018 Humboldt Code Club. All rights reserved.
 //
 
 import SpriteKit
 import os.log
 
+/// A demo camera implementation
 class DemoCamera: SKCameraNode {
     
     // MARK: Properties
@@ -18,7 +19,7 @@ class DemoCamera: SKCameraNode {
     // z is a scale value and will adjust the scale of the camera's viewport.
     private var velocity: (x: CGFloat, y: CGFloat, z: CGFloat) = (0, 0, 0)
     
-    // friction is a used to decrease the velocity of the camera after user interaction has
+    // friction is the value used to decrease the velocity of the camera after user interaction has
     // ended to cause the camera to gradually slow to a stop.
     private var friction: CGFloat = 0.95
     
@@ -31,7 +32,7 @@ class DemoCamera: SKCameraNode {
     // A value of 1.0 will be a hard edge where the camera stops at it min and max ranges with no give or bounce.
     // Smaller values will allow the camera to travel farther past its range and bounce back.
     // A value of 0.0 will allow the camera to completely ignore its defined range.
-    private let attractiveForce: CGFloat = 0.25
+    private var attractiveForce: CGFloat = 0.25
     
     // The cameras position and scale range
     var range: (x: (min: CGFloat, max: CGFloat),
@@ -55,11 +56,11 @@ class DemoCamera: SKCameraNode {
     
     // Viewport indicator that demonstrates adding game controls to the camera and aids in debugging
     private let viewportLabel = SKLabelNode(fontNamed: "AppleSDGothicNeo-SemiBold")
-    
+
     
     // MARK: Initializers
     
-    // Creates a camera node
+    /// Creates a camera node
     override init() {
         super.init()
     }
@@ -70,53 +71,14 @@ class DemoCamera: SKCameraNode {
     }
     
     
-    // MARK: Public Functions
+    // MARK: Camera Property Setters
     
-    // set all forces that act upon the camera to 0, stoping the camera's motion
-    func stop() {
-        velocity = (0.0, 0.0, 0.0)
-        attraction = (0.0, 0.0, 0.0)
-    }
+    /**
+     Set the velocity of the camera position and scale
+        - Parameters:
+            - x : the x velocity of the camera.
+     */
     
-    // Update tells the camera to update itself
-    func update() {
-        updatePosition()
-        updateScale()
-        updateHUD()
-    }
-    
-    // Display the position indicator
-    func showPosition() {
-        if (!showsPosition) {
-            showsPosition = true
-            positionLabel.fontSize = 8
-            positionLabel.fontColor = .white
-            addChild(positionLabel)
-        }
-    }
-    
-    // Display the scale indicator
-    func showScale() {
-        if (!showsScale) {
-            showsScale = true
-            scaleLabel.fontSize = 8
-            scaleLabel.fontColor = .white
-            scaleLabel.position = CGPoint(x:0.0, y: -15.0)
-            addChild(scaleLabel)
-        }
-    }
-    
-    func showViewport() {
-        if (!showsViewport) {
-            showsViewport = true
-            viewportLabel.fontSize = 8
-            viewportLabel.fontColor = .white
-            viewportLabel.position = CGPoint(x:0.0, y: -30.0)
-            addChild(viewportLabel)
-        }
-    }
-    
-    // Set the velocity of the camera position and scale
     func setCameraVelocity(x: CGFloat!, y: CGFloat!, z: CGFloat!) {
         setCameraPositionVelocity(x: x, y: y)
         if (z != nil) {
@@ -155,14 +117,34 @@ class DemoCamera: SKCameraNode {
         if (force <= 0 || force >= 1.0) {
             os_log("Attractive force should be a number between 0 and 1", type: .error)
         }
+        attractiveForce = force
     }
     
-    // MARK: Private Functions
+    
+    // MARK: Updating the Camera
+    
+    // set all forces that act upon the camera to 0, stoping the camera's motion
+    func stop() {
+        velocity = (0.0, 0.0, 0.0)
+        attraction = (0.0, 0.0, 0.0)
+    }
+    
+    // Update tells the camera to update itself
+    func update() {
+        if (velocity.x != 0 || velocity.y != 0 || attraction.x != 0 || attraction.y != 0) {
+            updatePosition()
+        }
+        
+        if (velocity.z != 0 || attraction.z != 0) {
+//            updateScale()
+        }
+        
+        updateHUD()
+    }
     
     // Apply's forces to the camera's velocity and then upadtes its position
     private func updatePosition() {
-        
-        // Update attraction x
+         // Update attraction x
         if (position.x < range.x.min) {
             attraction.x = position.x - range.x.min
             attraction.x *= attractiveForce
@@ -173,7 +155,7 @@ class DemoCamera: SKCameraNode {
         } else {
             attraction.x = 0.0
         }
-        
+
         // Update attraction y
         if (position.y < range.y.min) {
             attraction.y = position.y - range.y.min
@@ -184,19 +166,28 @@ class DemoCamera: SKCameraNode {
         } else {
             attraction.y = 0.0
         }
-
-        // Apply friction
-        velocity.x *= friction
-        velocity.y *= friction
         
-        // And finally update the position
+        // Apply friction to velocity
+        velocity.x *= friction
+        if (abs(velocity.x) < 0.01) {
+            velocity.x = 0
+        }
+        
+        velocity.y *= friction
+        if (abs(velocity.y) < 0.01) {
+            velocity.y = 0
+        }
+        
         position.x -= velocity.x + attraction.x
         position.y += velocity.y - attraction.y
     }
     
-    // Applies forces to the camera's scale velocity and then updates the scale
-    private func updateScale() {
+    private func applyPositionForces() {
         
+        
+        
+    }
+    private func applyScaleForces() {
         // x and y should always be scaling equally in this camera,
         // but just incase something happens to throw them out of whack... set them equal
         yScale = xScale
@@ -215,9 +206,55 @@ class DemoCamera: SKCameraNode {
         
         // Apply friction to velocity so the camera slows to a stop when user interaction ends.
         velocity.z *= friction
+    }
+    
+    
+    
+    // TODO: Applies forces to the camera's scale velocity and then updates the scale
+    private func updateScale() {
         
-        // Update the camera's scale
-        setScale(xScale - velocity.z + attraction.z)
+            applyScaleForces()
+        
+        
+        
+            // Update the camera's scale
+            setScale(xScale - velocity.z + attraction.z)
+        
+    }
+    
+    
+    // MARK: Heads Up Display
+    
+    // Display the position indicator
+    func showPosition() {
+        if (!showsPosition) {
+            showsPosition = true
+            positionLabel.fontSize = 8
+            positionLabel.fontColor = .white
+            addChild(positionLabel)
+        }
+    }
+    
+    // Display the scale indicator
+    func showScale() {
+        if (!showsScale) {
+            showsScale = true
+            scaleLabel.fontSize = 8
+            scaleLabel.fontColor = .white
+            scaleLabel.position = CGPoint(x:0.0, y: -15.0)
+            addChild(scaleLabel)
+        }
+    }
+    
+    //
+    func showViewport() {
+        if (!showsViewport) {
+            showsViewport = true
+            viewportLabel.fontSize = 8
+            viewportLabel.fontColor = .white
+            viewportLabel.position = CGPoint(x:0.0, y: -30.0)
+            addChild(viewportLabel)
+        }
     }
     
     /**

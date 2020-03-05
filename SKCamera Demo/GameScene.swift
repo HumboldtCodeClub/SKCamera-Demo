@@ -1,6 +1,6 @@
 //
-//  GameScene.swift
-//  SKCamera Demo
+///  GameScene.swift
+///  SKCamera Demo
 //
 //  In any scene implementing the demo camera you will need to:
 //    1. Configure the camers
@@ -8,8 +8,8 @@
 //    3. Add the camera node as a child of the scene (so HUD can be displayed)
 //    4. Call the camera's update function from the scene's update function
 //
-//  Created by Sean Allen on 3/29/18.
-//  Copyright © 2018 Humboldt Code Club. All rights reserved.
+///  Created by Sean Allen on 3/29/18.
+///  Copyright © 2018 Humboldt Code Club. All rights reserved.
 //
 
 import SpriteKit

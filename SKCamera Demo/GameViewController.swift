@@ -55,22 +55,42 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         // use stop to give the effect of pinning the camera under your finger when touching the screen.
         demoScene.demoCamera.stop()
+//        demoScene.demoCamera.isUnderUserControl = true
+//        let touch = touches.first!
+//        let location = touch.location(in: demoScene)
+//        let move: SKAction = SKAction.move(to: location, duration: 0.5)
+//        move.timingMode = .easeOut
+//        demoScene.demoCamera.run(move)
     }
     
     @objc func handlePanGesture(recognizer: UIPanGestureRecognizer) {
-        // Update the camera's position velocity based on user interaction.
-        // The velocity of the recognizer is much larger than what feels comfortable to the user, so it is reduced by a factor of 100.
-        // If your game needs a faster or slower camera feel reduce or increase the number that velocity is being divided by.
-        let panVelocity = (recognizer.velocity(in: demoScene.view))
-        demoScene.demoCamera.setCameraPositionVelocity(x: panVelocity.x / 100, y: panVelocity.y / 100)
+        
+        let translation = recognizer.translation(in: self.view)
+        demoScene.demoCamera.position = CGPoint(x: demoScene.demoCamera.position.x - translation.x,
+                                                y: demoScene.demoCamera.position.y + translation.y)
+        recognizer.setTranslation(CGPoint.zero, in: self.view)
+        
+        if (recognizer.state == .ended) {
+            let panVelocity = (recognizer.velocity(in: demoScene.view))
+            demoScene.demoCamera.setCameraPositionVelocity(x: panVelocity.x / 100, y: panVelocity.y / 100)
+        }
     }
     
     @objc func handlePinchGesture(recognizer: UIPinchGestureRecognizer) {
         // Update the camera's scale velocity based on user interaction.
         // Recognizer velocity is reduced to provide a more pleasant user experience.
         // Increase or decrease the divisor to create a faster or slower camera.
-        let pinchVelocity = recognizer.velocity
-        demoScene.demoCamera.setCameraScaleVelocity(z: pinchVelocity / 100)
+//        if (recognizer.state == .changed) {
+//            demoScene.demoCamera.isCameraInMotion = true
+//            demoScene.demoCamera.isUnderUserControl = true
+//            let pinchVelocity = recognizer.velocity
+//            demoScene.demoCamera.setCameraScaleVelocity(z: pinchVelocity / 100)
+//        }
+//
+//        if (recognizer.state == .ended) {
+//            demoScene.demoCamera.isUnderUserControl = false;
+//        }
+        
     }
     
     // MARK: Gesture Recognizer Delegate
