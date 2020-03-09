@@ -15,7 +15,7 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, UIGestureRecognizerDelegate {
     
     // MARK: Properties
     
@@ -27,6 +27,8 @@ class GameScene: SKScene {
     
     // The whole point of this project is to demonstrate our SKCameraNode subclass!
     let demoCamera: DemoCamera!
+    
+    var initialScale: CGFloat = 1.0
     
     // MARK: Initializers
     
@@ -66,6 +68,16 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         // Call any custom code to setup the scene
+        
+        let panGesture = UIPanGestureRecognizer()
+        panGesture.addTarget(self, action: #selector(handlePanGesture(recognizer:)))
+        panGesture.delegate = self
+        self.view!.addGestureRecognizer(panGesture)
+        
+        let pinchGesture = UIPinchGestureRecognizer()
+        pinchGesture.addTarget(self, action: #selector(handlePinchGesture(recognizer:)))
+        self.view!.addGestureRecognizer(pinchGesture)
+        
         addGamePieces()
     }
     
@@ -74,6 +86,82 @@ class GameScene: SKScene {
         // Update the camera each frame
         demoCamera.update()
     }
+    
+    // MARK: Touch-based event handling
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        demoCamera.stop()
+    }
+    
+    @objc func handlePanGesture(recognizer: UIPanGestureRecognizer) {
+        
+        // While user interaction is happening simply apply thier changes directly to the camera
+        // Translation must be multiplied by scale to keep a consistent motion at all levels
+        let translation = recognizer.translation(in: self.view)
+        demoCamera.position = CGPoint(x: demoCamera.position.x - (translation.x * demoCamera.xScale),
+                                      y: demoCamera.position.y + (translation.y * demoCamera.yScale))
+        
+        // reset the translation so that next cycle we get the delta from our new position
+        recognizer.setTranslation(CGPoint.zero, in: self.view)
+        
+        // Once user interaction ends set camera's velocity so it can continue to move and slow to a stop
+        if (recognizer.state == .ended) {
+            let panVelocity = (recognizer.velocity(in: view))
+            demoCamera.setCameraPositionVelocity(x: panVelocity.x / 100, y: panVelocity.y / 100)
+        }
+    }
+    
+    @objc func handlePinchGesture(recognizer: UIPinchGestureRecognizer) {
+        // Update the camera's scale velocity based on user interaction.
+        // Recognizer velocity is reduced to provide a more pleasant user experience.
+        // Increase or decrease the divisor to create a faster or slower camera.
+        if (recognizer.state == .began) {
+            print("Initial Scale: \(initialScale)")
+//            initialScale = demoCamera.xScale
+        }
+        
+        if (recognizer.state == .changed) {
+//            var newScale = initialScale * recognizer.scale
+//            newScale = newScale < demoCamera.range.z.min ? demoCamera.range.z.min : newScale
+//            newScale = newScale > demoCamera.range.z.max ? demoCamera.range.z.max : newScale
+//            demoCamera.setScale(newScale)
+//            print("New Scale = \(initialScale) * \(recognizer.scale) = \(newScale)")
+            
+            // Second attempt
+            let deltaScale = recognizer.scale - 1.0;
+            var scaleMultiplier = 1.0 - deltaScale;
+            if (demoCamera.xScale < demoCamera.range.z.min ||
+                demoCamera.xScale > demoCamera.range.z.max) {
+                scaleMultiplier = 1.0
+            }
+            demoCamera.setScale(demoCamera.xScale * scaleMultiplier)
+            if (demoCamera.xScale < demoCamera.range.z.min) {
+                demoCamera.setScale(demoCamera.range.z.min)
+            }
+            if (demoCamera.xScale > demoCamera.range.z.max) {
+                demoCamera.setScale(demoCamera.range.z.max)
+            }
+            recognizer.scale = 1.0
+        }
+
+        if (recognizer.state == .ended) {
+//            initialScale = demoCamera.xScale
+            demoCamera.setCameraScaleVelocity(z: recognizer.velocity / 100)
+            print("Final Scale = \(demoCamera.xScale)")
+        }
+        
+    }
+    
+    // MARK: Gesture Recognizer Delegate
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+                           shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        // Since this demo only configures two gesture recognizers and we want them to work simultaneously we only need to return true.
+        // If additional gesture recognizers are added there could be a need to add aditional logic here to setup which specific
+        // recognizers should be working together.
+        return true;
+    }
+    
     
     // MARK: Private Functions
     
