@@ -49,6 +49,8 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         // Call the super class initializer
         super.init(size: size)
         
+        backgroundColor = SKColor.lightGray
+        
         // Set the scene's camera
         // If you do not add the camera as a child of the scene panning and zooming will still work,
         // but none of the children of the camera will be rendered. So, no HUD or game controls.
@@ -171,12 +173,10 @@ class GameScene: SKScene, UIGestureRecognizerDelegate {
         let columns = 18
         let rows = 18
         for column in 0...columns - 1 {
-            for row in 0...rows - 1 {
-                let newGamePiece = SKShapeNode(circleOfRadius: 50.0)
-                newGamePiece.position = CGPoint(x: (column * 120) - (columns * 60) + 60, y: (row * 120) - (rows * 60) + 60)
-                newGamePiece.strokeColor = UIColor.blue
-                newGamePiece.fillColor = UIColor.blue
-                gameLayer.addChild(newGamePiece)
+            for row in 0...rows - 1 {                
+                let spriteGamePiece = SKSpriteNode(imageNamed: "tile")
+                spriteGamePiece.position = CGPoint(x: (column * 120) - (columns * 60) + 60, y: (row * 120) - (rows * 60) + 60)
+                gameLayer.addChild(spriteGamePiece)
             }
         }
         let centerGamePiece = SKShapeNode(circleOfRadius: 5.0)
